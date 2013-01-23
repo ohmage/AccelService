@@ -1,31 +1,33 @@
 package edu.ucla.cens.accelservice;
 
-import edu.ucla.cens.systemlog.ISystemLog;
-import edu.ucla.cens.systemlog.Log;
-import edu.ucla.cens.systemsens.IPowerMonitor;
-import edu.ucla.cens.systemsens.IAdaptiveApplication;
-
-import android.app.Service;
-import android.app.PendingIntent;
 import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ComponentName;
 import android.content.ServiceConnection;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.SystemClock;
-import android.os.RemoteException;
 import android.os.PowerManager;
-import android.hardware.SensorManager;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorEvent;
-import android.hardware.Sensor;
+import android.os.RemoteException;
+import android.os.SystemClock;
 
-import java.util.List;
+import edu.ucla.cens.systemsens.IAdaptiveApplication;
+import edu.ucla.cens.systemsens.IPowerMonitor;
+
+import org.ohmage.logprobe.Log;
+import org.ohmage.logprobe.LogProbe;
+import org.ohmage.logprobe.LogProbe.Loglevel;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 
 public class AccelService extends Service
@@ -765,6 +767,8 @@ public class AccelService extends Service
 
     };
 
+    private LogProbe logger;
+
 
     /**
       * Triggers the sensor reading cycle.
@@ -823,11 +827,8 @@ public class AccelService extends Service
      
         }
 
-        if (!Log.isConnected())
-        {
-            bindService(new Intent(ISystemLog.class.getName()),
-                    Log.SystemLogConnection, Context.BIND_AUTO_CREATE);
-        }
+        LogProbe.setLevel(true, Loglevel.VERBOSE);
+        LogProbe.get(this);
 
         if (intent != null)
         {
@@ -864,10 +865,9 @@ public class AccelService extends Service
     public void onCreate() {
         super.onCreate();
 
-        Log.setAppName(APP_NAME);
-        bindService(new Intent(ISystemLog.class.getName()),
-                Log.SystemLogConnection, Context.BIND_AUTO_CREATE);
-     
+        LogProbe.setLevel(true, Loglevel.VERBOSE);
+        LogProbe.get(this);
+
         bindService(new Intent(IPowerMonitor.class.getName()),
                 mPowerMonitorConnection, Context.BIND_AUTO_CREATE);
  
@@ -930,8 +930,8 @@ public class AccelService extends Service
 
     	super.onDestroy();
 
-        unbindService(Log.SystemLogConnection);
-    	
+    	LogProbe.close(this);
+
     	//if (mSensorRunning)
         mSensorManager.unregisterListener(mSensorListener);
     	
