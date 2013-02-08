@@ -1,4 +1,4 @@
-package edu.ucla.cens.accelservice;
+package org.ohmage.accelservice;
 
 interface IAccelService
 {

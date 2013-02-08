@@ -1,4 +1,4 @@
-package edu.ucla.cens.accelservice;
+package org.ohmage.accelservice;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
