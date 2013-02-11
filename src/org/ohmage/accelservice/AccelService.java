@@ -138,11 +138,13 @@ public class AccelService extends Service
         = new IAdaptiveApplication.Stub()
     {
 
+        @Override
         public String getName()
         {
             return APP_NAME;
         }
 
+        @Override
         public List<String> identifyList()
         {
             ArrayList<String> unitNames = new ArrayList<String>(1);
@@ -151,6 +153,7 @@ public class AccelService extends Service
             return unitNames;
         }
 
+        @Override
         public List<Double> getWork()
         {
             ArrayList<Double> totalWork = new ArrayList<Double>(1);
@@ -162,6 +165,7 @@ public class AccelService extends Service
             return totalWork;
         }
 
+        @Override
         public void setWorkLimit(List workLimit)
         {
             double accelLimit = (Double) workLimit.get(0);
@@ -172,9 +176,10 @@ public class AccelService extends Service
 
     };
 
-    private ServiceConnection mPowerMonitorConnection
+    private final ServiceConnection mPowerMonitorConnection
         = new ServiceConnection()
     {
+        @Override
         public void onServiceConnected(ComponentName className,
                 IBinder service)
         {
@@ -186,12 +191,12 @@ public class AccelService extends Service
             }
             catch (RemoteException re)
             {
-                Log.e(TAG, "Could not register AdaptivePower object",
-                        re);
+                Log.e(TAG, "Could not register AdaptivePower object", re);
             }
             mPowerMonitorConnected = true;
         }
 
+        @Override
         public void onServiceDisconnected(ComponentName className)
         {
             try
@@ -200,8 +205,7 @@ public class AccelService extends Service
             }
             catch (RemoteException re)
             {
-                Log.e(TAG, "Could not unregister AdaptivePower object",
-                        re);
+                Log.e(TAG, "Could not unregister AdaptivePower object", re);
             }
             mPowerMonitor = null;
             mPowerMonitorConnected = false;
@@ -232,7 +236,8 @@ public class AccelService extends Service
 		 * @see android.hardware.SensorEventListener#onSensorChanged(
          * android.hardware.SensorEvent)
 		 */
-		public void onSensorChanged(SensorEvent se) 
+		@Override
+        public void onSensorChanged(SensorEvent se) 
 		{
             mAccelCounter.count();
 
@@ -283,7 +288,8 @@ public class AccelService extends Service
 		 * @see android.hardware.SensorEventListener#onAccuracyChanged(
          * android.hardware.Sensor, int)
 		 */
-		public void onAccuracyChanged(Sensor sensor, int accuracy) 
+		@Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) 
 		{
 			String accuracyStr = "Unkown";
 			
@@ -327,7 +333,8 @@ public class AccelService extends Service
 		 * @return 			the actual rate that was set
 		 * 
 		 */
-		public int suggestRate(String callerName, int rate)
+		@Override
+        public int suggestRate(String callerName, int rate)
 		{
             if (callerName == null)
                 return -1;
@@ -340,7 +347,7 @@ public class AccelService extends Service
             }
             else
             {
-                Log.i(TAG, "Client " + callerName + 
+                Log.v(TAG, "Client " + callerName + 
                         " not recognized. Adding it.");
                 mClientsMap.put(callerName, new ClientInfo());
                 mClientsMap.get(callerName).setRate(rate);
@@ -356,7 +363,8 @@ public class AccelService extends Service
 		 * @param 	length		length of the interval for sensor 
          *                      reading in milli-seconds
 		 */
-		public long setReadingLength(String callerName, long length)
+		@Override
+        public long setReadingLength(String callerName, long length)
 		{
 
             if (callerName == null)
@@ -370,7 +378,7 @@ public class AccelService extends Service
             }
             else
             {
-                Log.i(TAG, "Client " + callerName + 
+                Log.v(TAG, "Client " + callerName + 
                         " not recognized. Adding it.");
                 mClientsMap.put(callerName, new ClientInfo());
                 mClientsMap.get(callerName).setReadInterval(length);
@@ -387,6 +395,7 @@ public class AccelService extends Service
          * @param   length      length of the warm-up interval for
          *                      preparing the accelerometer
          */
+        @Override
         public long setWarmupLength(String callerName, long length)
         {
 
@@ -402,7 +411,7 @@ public class AccelService extends Service
             }
             else
             {
-                Log.i(TAG, "Client " + callerName + 
+                Log.v(TAG, "Client " + callerName + 
                         " not recognized. Adding it.");
                 mClientsMap.put(callerName, new ClientInfo());
                 mClientsMap.get(callerName).setWarmupInterval(length);
@@ -423,7 +432,8 @@ public class AccelService extends Service
 		 * @param	interval	suggested length of off interval 
                                 in milli-seconds
 		 */
-		public long suggestInterval(String callerName, long interval)
+		@Override
+        public long suggestInterval(String callerName, long interval)
 		{
             if (callerName == null)
                 return -1;
@@ -438,7 +448,7 @@ public class AccelService extends Service
             else
             {
 
-                Log.i(TAG, "Client " + callerName + 
+                Log.v(TAG, "Client " + callerName + 
                         " not recognized. Adding it.");
                 mClientsMap.put(callerName, new ClientInfo());
                 mClientsMap.get(callerName).setSleepInterval(interval);
@@ -453,7 +463,8 @@ public class AccelService extends Service
 		 * 
 		 * @return				current sleep interval used by the service
 		 */
-		public long getInterval()
+		@Override
+        public long getInterval()
 		{
 		    return mSleepInterval;
 		}
@@ -463,7 +474,8 @@ public class AccelService extends Service
 		 * 
 		 * @return				current rate
 		 */
-		public int getRate()
+		@Override
+        public int getRate()
 		{
 		    return mRate;
 		}
@@ -474,7 +486,8 @@ public class AccelService extends Service
 		 * 
 		 * @return				current reading length 
 		 */
-		public long getReadingLength()
+		@Override
+        public long getReadingLength()
 		{
 		    return mReadInterval;
 		}
@@ -484,7 +497,8 @@ public class AccelService extends Service
 		 * 
 		 * @return				current warmup interval length 
 		 */
-		public long getWarmupLength()
+		@Override
+        public long getWarmupLength()
 		{
             return mWarmupInterval;
 		}
@@ -496,7 +510,8 @@ public class AccelService extends Service
 		 * 
 		 * @return				latest recorded force vector
 		 */
-		public List<Double> getLastForce()
+		@Override
+        public List<Double> getLastForce()
 		{
             synchronized(mLastListX)
             {
@@ -510,7 +525,8 @@ public class AccelService extends Service
 		  *
 		  * @return				latest recorded values
 		  */
-		 public List<Double> getLastXValues()
+		 @Override
+        public List<Double> getLastXValues()
 		 {
 
             synchronized(mLastListX)
@@ -526,7 +542,8 @@ public class AccelService extends Service
 		  *
 		  * @return				latest recorded values
 		  */
-		 public List<Double> getLastYValues()
+		 @Override
+        public List<Double> getLastYValues()
 		 {
             synchronized(mLastListX)
             {
@@ -540,7 +557,8 @@ public class AccelService extends Service
 		  *
 		  * @return				latest recorded values
 		  */
-		 public List<Double> getLastZValues()
+		 @Override
+        public List<Double> getLastZValues()
 		 { 
              synchronized(mLastListX)
              {
@@ -557,7 +575,8 @@ public class AccelService extends Service
 		   * @return 			time-stamp of the latest recorded
            *                    sensor value
 		   */
-		  public long getLastTimeStamp()
+		  @Override
+        public long getLastTimeStamp()
 		  {
              synchronized(mLastListX)
              {
@@ -570,7 +589,8 @@ public class AccelService extends Service
            *
            * @return             running state of the service
            */
-          public boolean isRunning()
+          @Override
+        public boolean isRunning()
           {
               return mIsRunning;
           }
@@ -578,20 +598,21 @@ public class AccelService extends Service
           /**
            * Starts the accelerometer service.
            */
-          public void start(String callerName)
+          @Override
+        public void start(String callerName)
           {
               
               if (callerName == null)
                   return;
 
-              Log.i(TAG, "Received start() from " 
+              Log.v(TAG, "Received start() from " 
                       + callerName);
 
               if (mClientsMap != null)
-                  Log.i(TAG, "Current clients are: " +
+                  Log.v(TAG, "Current clients are: " +
                           mClientsMap.keySet());
               else
-                  Log.i(TAG, "ClientsMap is null");
+                  Log.v(TAG, "ClientsMap is null");
 
 
 
@@ -602,10 +623,10 @@ public class AccelService extends Service
 
 
               if (mClientsMap != null)
-                  Log.i(TAG, "New clients are: " +
+                  Log.v(TAG, "New clients are: " +
                           mClientsMap.keySet());
               else
-                  Log.i(TAG, "ClientsMap is null");
+                  Log.v(TAG, "ClientsMap is null");
 
 
 
@@ -615,7 +636,7 @@ public class AccelService extends Service
               if ((clientCount == 1) && (!mIsRunning))
               //if (!mIsRunning)
               {
-                  Log.i(TAG, "Starting the service");
+                  Log.v(TAG, "Starting the service");
                   mAlarmManager.cancel(mAccelSender);
 
                   mAlarmManager.setRepeating(
@@ -628,20 +649,21 @@ public class AccelService extends Service
               }
               else
               {
-                  Log.i(TAG, "Already running");
+                  Log.v(TAG, "Already running");
               }
           }
           
           /**
           * Stops the accelerometer service to save maximum power.
           */
-          public void stop(String callerName)
+          @Override
+        public void stop(String callerName)
           {
 
               if (callerName == null)
                   return;
 
-              Log.i(TAG, "Received stop() from " 
+              Log.v(TAG, "Received stop() from " 
                       + callerName);
 
 
@@ -652,11 +674,11 @@ public class AccelService extends Service
 
               int clientCount = mClientsMap.size();
 
-              Log.i(TAG, "Client count is " + clientCount);
+              Log.v(TAG, "Client count is " + clientCount);
 
               if ((clientCount == 0) && (mIsRunning))
               {
-                  Log.i(TAG, "Stopping the service");
+                  Log.v(TAG, "Stopping the service");
                   mIsRunning = false;
                   mAlarmManager.cancel(mAccelSender);
                   mHandler.removeMessages(SLEEP_TIMER_MSG);
@@ -672,7 +694,7 @@ public class AccelService extends Service
               }
               else
               {
-                  Log.i(TAG, "Still need to continue running.");
+                  Log.v(TAG, "Still need to continue running.");
                   adjustRate();
                   adjustSleepInterval();
                   adjustWarmupInterval();
@@ -740,14 +762,6 @@ public class AccelService extends Service
                     mLastListZ = mTempListZ;
                 }
 
-
-            	//}
-                //else
-                //{
-                //    Log.v(TAG, "Time to turn off sensor,"
-                //            + " but running flag is not set.");
-                //}
-
                 if (mCpuLock.isHeld())
                     mCpuLock.release();
 
@@ -801,27 +815,18 @@ public class AccelService extends Service
         }
         else
         {
-            Log.i(TAG, "Ran out of budget. Did not turn " +
+            Log.v(TAG, "Ran out of budget. Did not turn " +
                     "on the sensor.");
         }
-
-        //}
-        //else
-        //{
-        //    Log.i(TAG, "Sensor is already recording.");
-        //}
-
-
     }
 
 
     @Override
     public void onStart(Intent intent, int startId)
     {
-        //Log.i(TAG, "Received onStart() call");
         if (!mPowerMonitorConnected)
         {
-            Log.i(TAG, "Rebinding to PowerMonitor");
+            Log.v(TAG, "Rebinding to PowerMonitor");
             bindService(new Intent(IPowerMonitor.class.getName()),
                     mPowerMonitorConnection, Context.BIND_AUTO_CREATE);
      
@@ -833,14 +838,11 @@ public class AccelService extends Service
         if (intent != null)
         {
             String action = intent.getAction();
-            //Log.i(TAG, "Intent is not null.");
 
             if (action != null)
             {
-                //Log.i(TAG, "Action is not null.");
                 if (action.equals(ACCEL_ALARM_ACTION))
                 {
-                    //Log.i(TAG, "ACCEL_ALARM_ACTION it is.");
                     if (!mCpuLock.isHeld())
                         mCpuLock.acquire(); // Released after sensor
                                             // reading is over
@@ -871,9 +873,6 @@ public class AccelService extends Service
         bindService(new Intent(IPowerMonitor.class.getName()),
                 mPowerMonitorConnection, Context.BIND_AUTO_CREATE);
  
-
-        Log.i(TAG, "onCreate");
-
         //mSensorRunning = false;
 
         mClientsMap = new Hashtable<String, ClientInfo>();
@@ -913,9 +912,7 @@ public class AccelService extends Service
     @Override
     public void onDestroy()
     {
-    	Log.i(TAG, "onDestroy");
-
-        Log.i(TAG, "Stopping the service");
+        Log.v(TAG, "Stopping the service");
         mAlarmManager.cancel(mAccelSender);
         mHandler.removeMessages(SLEEP_TIMER_MSG);
         mHandler.removeMessages(READ_TIMER_MSG);
@@ -942,7 +939,7 @@ public class AccelService extends Service
      */
     private void resetToDefault()
     {
-        Log.i(TAG, "Resetting variables to default");
+        Log.v(TAG, "Resetting variables to default");
     	/** Sensor reading rate. Default rate is set to GAME */
     	mRate = DEFAULT_RATE;
     	
@@ -1010,7 +1007,7 @@ public class AccelService extends Service
         if (mSleepInterval != curInterval)
         {
             mSleepInterval = curInterval;
-            Log.i(TAG, "Sleeping interval changed to " + mSleepInterval);
+            Log.v(TAG, "Sleeping interval changed to " + mSleepInterval);
         }
 
         if (mIsRunning)
@@ -1063,7 +1060,7 @@ public class AccelService extends Service
         if (mReadInterval != curInterval)
         {
             mReadInterval = curInterval;
-            Log.i(TAG, "Read interval changed to " + mReadInterval);
+            Log.v(TAG, "Read interval changed to " + mReadInterval);
         }
         return mReadInterval;
     }
@@ -1091,7 +1088,7 @@ public class AccelService extends Service
         if (mRate != curRate)
         {
             mRate = curRate;
-            Log.i(TAG, "Rate set to " + mRate);
+            Log.v(TAG, "Rate set to " + mRate);
         }
 		return mRate;
     }
