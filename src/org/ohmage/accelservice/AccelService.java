@@ -17,13 +17,10 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.SystemClock;
+import android.util.Log;
 
 import edu.ucla.cens.systemsens.IAdaptiveApplication;
 import edu.ucla.cens.systemsens.IPowerMonitor;
-
-import org.ohmage.logprobe.Log;
-import org.ohmage.logprobe.LogProbe;
-import org.ohmage.logprobe.LogProbe.Loglevel;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -781,9 +778,6 @@ public class AccelService extends Service
 
     };
 
-    private LogProbe logger;
-
-
     /**
       * Triggers the sensor reading cycle.
       * Starts the sensor and also sends a message for the
@@ -832,9 +826,6 @@ public class AccelService extends Service
      
         }
 
-        LogProbe.setLevel(true, Loglevel.VERBOSE);
-        LogProbe.get(this);
-
         if (intent != null)
         {
             String action = intent.getAction();
@@ -866,9 +857,6 @@ public class AccelService extends Service
     @Override
     public void onCreate() {
         super.onCreate();
-
-        LogProbe.setLevel(true, Loglevel.VERBOSE);
-        LogProbe.get(this);
 
         bindService(new Intent(IPowerMonitor.class.getName()),
                 mPowerMonitorConnection, Context.BIND_AUTO_CREATE);
@@ -926,8 +914,6 @@ public class AccelService extends Service
 
 
     	super.onDestroy();
-
-    	LogProbe.close(this);
 
     	//if (mSensorRunning)
         mSensorManager.unregisterListener(mSensorListener);

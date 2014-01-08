@@ -3,10 +3,7 @@ package org.ohmage.accelservice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-
-import org.ohmage.logprobe.Log;
-
-
+import android.util.Log;
 
 /**
  * Starts the Service at boot time.
